@@ -1,0 +1,536 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Look and Match - English Activity</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 25px 15px;
+    font-family: Arial, sans-serif;
+    background: #eef5ff;
+    color: #243247;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px #00000015;
+}
+
+h1 {
+    text-align: center;
+    color: #24518a;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+h2 {
+    color: #24518a;
+    font-size: 20px;
+}
+
+.picture {
+    width: 100%;
+    margin-bottom: 25px;
+    border: 2px solid #b8d2f5;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.picture img {
+    display: block;
+    width: 100%;
+}
+
+.sentences {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.sentence {
+    padding: 15px;
+    background: #fff5e9;
+    border: 2px solid #ffb46d;
+    border-radius: 12px;
+    cursor: grab;
+    font-weight: bold;
+    text-align: center;
+    transition: 0.2s;
+    user-select: none;
+}
+
+.sentence:hover {
+    transform: translateY(-3px);
+    background: #ffe5c7;
+}
+
+.sentence.selected {
+    outline: 3px solid #3984d6;
+}
+
+.number {
+    display: inline-block;
+    margin-right: 5px;
+    color: #ed6a14;
+    font-size: 20px;
+}
+
+.targets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.target {
+    min-height: 130px;
+    padding: 15px;
+    border: 2px dashed #8eb5e8;
+    background: #f3f8ff;
+    border-radius: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.2s;
+}
+
+.target.over {
+    background: #dcecff;
+    border-color: #2875c7;
+}
+
+.target h3 {
+    margin: 0;
+    color: #24518a;
+}
+
+.target.correct {
+    background: #e6f9ed;
+    border: 2px solid #35a866;
+}
+
+.target.wrong {
+    background: #ffeaea;
+    border: 2px solid #e05252;
+}
+
+.target .sentence {
+    font-size: 14px;
+    cursor: grab;
+}
+
+.placeholder {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 13px 25px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.check {
+    background: #24518a;
+    color: white;
+}
+
+.reset {
+    background: #e5edf8;
+    color: #24518a;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+#feedback {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    min-height: 25px;
+}
+
+@media(max-width: 650px) {
+    .container {
+        padding: 18px;
+    }
+
+    .sentences,
+    .targets {
+        grid-template-columns: 1fr;
+    }
+
+    .sentence {
+        padding: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>READ AND MATCH!</h1>
+
+    <p class="subtitle">
+        Look at the orange circles. Choose A, B, or C.
+    </p>
+
+    <!-- MONSTER PICTURE -->
+    <div class="picture">
+        <img src="activity-monsters.jpg"
+             alt="Three monsters A, B and C">
+    </div>
+
+    <h2>1. Drag the sentences</h2>
+
+    <p>
+        Drag each sentence to the correct monster.
+    </p>
+
+    <!-- SENTENCES -->
+    <div class="sentences" id="sentenceList">
+
+        <div class="sentence"
+             draggable="true"
+             data-id="1"
+             onclick="selectSentence(this)">
+            <span class="number">1.</span>
+            This is my eye.
+        </div>
+
+        <div class="sentence"
+             draggable="true"
+             data-id="2"
+             onclick="selectSentence(this)">
+            <span class="number">2.</span>
+            These are my eyes.
+        </div>
+
+        <div class="sentence"
+             draggable="true"
+             data-id="3"
+             onclick="selectSentence(this)">
+            <span class="number">3.</span>
+            I have two ears.
+        </div>
+
+    </div>
+
+    <h2 style="margin-top:30px">
+        2. Match with the monsters
+    </h2>
+
+    <p>Drop your answers into the boxes below.</p>
+
+    <!-- ANSWER BOXES -->
+    <div class="targets">
+
+        <div class="target"
+             data-answer="A"
+             onclick="dropSelected(this)"
+             ondragover="allowDrop(event)"
+             ondrop="dropSentence(event,this)"
+             ondragleave="this.classList.remove('over')">
+
+            <h3>MONSTER A</h3>
+            <span class="placeholder">Drop answer here</span>
+
+        </div>
+
+        <div class="target"
+             data-answer="B"
+             onclick="dropSelected(this)"
+             ondragover="allowDrop(event)"
+             ondrop="dropSentence(event,this)"
+             ondragleave="this.classList.remove('over')">
+
+            <h3>MONSTER B</h3>
+            <span class="placeholder">Drop answer here</span>
+
+        </div>
+
+        <div class="target"
+             data-answer="C"
+             onclick="dropSelected(this)"
+             ondragover="allowDrop(event)"
+             ondrop="dropSentence(event,this)"
+             ondragleave="this.classList.remove('over')">
+
+            <h3>MONSTER C</h3>
+            <span class="placeholder">Drop answer here</span>
+
+        </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+
+        <button class="check" onclick="checkAnswers()">
+            CHECK ANSWERS
+        </button>
+
+        <button class="reset" onclick="resetGame()">
+            TRY AGAIN
+        </button>
+
+    </div>
+
+    <div id="feedback"></div>
+
+</div>
+
+<script>
+
+let selected = null;
+
+// CORRECT ANSWERS
+const answers = {
+    A: "1",
+    B: "2",
+    C: "3"
+};
+
+// DRAG EVENT
+document.querySelectorAll(".sentence").forEach(item => {
+
+    item.addEventListener("dragstart", function(event) {
+        event.dataTransfer.setData("text", this.dataset.id);
+        selected = this;
+    });
+
+});
+
+// SELECT SENTENCE FOR MOBILE
+function selectSentence(element) {
+
+    document.querySelectorAll(".sentence")
+        .forEach(item => item.classList.remove("selected"));
+
+    selected = element;
+
+    element.classList.add("selected");
+
+}
+
+// ALLOW DROP
+function allowDrop(event) {
+
+    event.preventDefault();
+
+    event.currentTarget.classList.add("over");
+
+}
+
+// PLACE SENTENCE
+function placeSentence(sentence, target) {
+
+    if (!sentence || !target) return;
+
+    // Remove sentence from its previous location
+    const oldTarget = sentence.parentElement;
+
+    if (oldTarget.classList.contains("target")) {
+        showPlaceholder(oldTarget);
+    }
+
+    // Return previous answer to sentence list
+    const previous = target.querySelector(".sentence");
+
+    if (previous && previous !== sentence) {
+        document.getElementById("sentenceList")
+            .appendChild(previous);
+
+        previous.classList.remove("selected");
+    }
+
+    const placeholder = target.querySelector(".placeholder");
+
+    if (placeholder) {
+        placeholder.remove();
+    }
+
+    target.appendChild(sentence);
+
+    sentence.classList.remove("selected");
+
+    target.classList.remove("correct", "wrong", "over");
+
+    selected = null;
+
+    document.getElementById("feedback").textContent = "";
+
+}
+
+// DESKTOP DROP
+function dropSentence(event, target) {
+
+    event.preventDefault();
+
+    target.classList.remove("over");
+
+    const id = event.dataTransfer.getData("text");
+
+    const sentence = document.querySelector(
+        '.sentence[data-id="' + id + '"]'
+    );
+
+    placeSentence(sentence, target);
+
+}
+
+// MOBILE TAP
+function dropSelected(target) {
+
+    if (selected) {
+        placeSentence(selected, target);
+    }
+
+}
+
+// PLACEHOLDER
+function showPlaceholder(target) {
+
+    if (!target.querySelector(".sentence")) {
+
+        const placeholder = document.createElement("span");
+
+        placeholder.className = "placeholder";
+
+        placeholder.textContent = "Drop answer here";
+
+        target.appendChild(placeholder);
+
+    }
+
+}
+
+// CHECK ANSWERS
+function checkAnswers() {
+
+    let score = 0;
+
+    let completed = 0;
+
+    document.querySelectorAll(".target").forEach(target => {
+
+        target.classList.remove("correct", "wrong");
+
+        const sentence = target.querySelector(".sentence");
+
+        if (!sentence) return;
+
+        completed++;
+
+        if (sentence.dataset.id === answers[target.dataset.answer]) {
+
+            score++;
+
+            target.classList.add("correct");
+
+        } else {
+
+            target.classList.add("wrong");
+
+        }
+
+    });
+
+    const feedback = document.getElementById("feedback");
+
+    if (completed < 3) {
+
+        feedback.style.color = "#dc4545";
+
+        feedback.textContent =
+            "Please complete all answers first!";
+
+    } else if (score === 3) {
+
+        feedback.style.color = "#15934e";
+
+        feedback.textContent =
+            "Excellent! You got 3 out of 3! 🎉";
+
+    } else {
+
+        feedback.style.color = "#dc4545";
+
+        feedback.textContent =
+            "Your score is " + score + "/3. Try again! 💪";
+
+    }
+
+}
+
+// RESET GAME
+function resetGame() {
+
+    const sentenceList = document.getElementById("sentenceList");
+
+    document.querySelectorAll(".target").forEach(target => {
+
+        const sentence = target.querySelector(".sentence");
+
+        if (sentence) {
+            sentenceList.appendChild(sentence);
+        }
+
+        target.classList.remove(
+            "correct",
+            "wrong",
+            "over"
+        );
+
+        showPlaceholder(target);
+
+    });
+
+    document.getElementById("feedback").textContent = "";
+
+    document.querySelectorAll(".sentence")
+        .forEach(item => item.classList.remove("selected"));
+
+    selected = null;
+
+}
+
+</script>
+
+</body>
+</html>
